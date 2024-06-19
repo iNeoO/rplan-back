@@ -1,60 +1,34 @@
-import { OpenAPIHono, createRoute, z } from '@hono/zod-openapi'
-import { swaggerUI } from '@hono/swagger-ui'
-import { logger } from 'hono/logger'
+import { OpenAPIHono } from '@hono/zod-openapi';
+import { swaggerUI } from '@hono/swagger-ui';
+import { logger } from 'hono/logger';
+
+// import MailService from './services/mailService';
 
 import authRoutes from './routes/auth.route';
+import userRoutes from './routes/user.route';
+import planRoutes from './routes/plan.route';
 
-const app = new OpenAPIHono()
+const app = new OpenAPIHono();
 
-app.use(logger())
+app.use(logger());
 
-
-app.openapi(
-  createRoute({
-    method: 'get',
-    path: '/hello',
-    responses: {
-      200: {
-        description: 'Respond a message',
-        content: {
-          'application/json': {
-            schema: z.object({
-              message: z.string()
-            })
-          }
-        }
-      }
-    }
-  }),
-  (c) => {
-    return c.json({
-      message: 'hello'
-    })
-  }
-)
-
-app.route('auth', authRoutes)
+app.route('auth', authRoutes);
+app.route('user', userRoutes);
+app.route('plan', planRoutes);
 
 app.get(
   '/ui',
   swaggerUI({
-    url: '/doc'
-  })
-)
-
-app.get(
-  '/ui/json',
-  swaggerUI({
-    url: '/doc'
-  })
-)
+    url: '/doc',
+  }),
+);
 
 app.doc('/doc', {
   info: {
     title: 'An API',
-    version: 'v1'
+    version: 'v1',
   },
-  openapi: '3.1.0'
-})
+  openapi: '3.1.0',
+});
 
-export default app
+export default app;
